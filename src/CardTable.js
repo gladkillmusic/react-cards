@@ -4,25 +4,30 @@ import axios from "axios";
 
 
 function CardTable() {
-  const [cards, setCards] = useState([]);
-  const [deckId,setDeckId] = useState(null);
+  const [card, setCard] = useState(null);
+  const [deckId, setDeckId] = useState(null);
+  const [buttonClick, setButtonClick] = useState(false);
 
   // initial effect that runs on page load, gets our deck/deck ID
+
+
   useEffect(() => {
     async function getDeck() {
-      let response = await axios.get(
-        "https://deckofcardsapi.com/api/deck/new/");
+      let response = await axios.get("https://deckofcardsapi.com/api/deck/new/");
 
+      // console.log("this is our deck id response\n\n\n", response.data);
       setDeckId(response.data.deck_id);
     }
-    getDeck()
-  }, [])
+
+    getDeck();
+
+  }, []);
 
 
   //gets card from deck, assigns image to our cardImage variable
   //if no cards remaining in deck, alerts that there are no cards left
 
-  useEffect(() => {
+  useEffect((deckId) => {
     async function getCard(deckId) {
       let response = await axios.get(`https://deckofcardsapi.com/api/deck/${deckId}/draw/?count=1
       `);
@@ -34,27 +39,25 @@ function CardTable() {
 
       let newCard = response.data.cards
 
-      setCards(cards => [...cards, {
+      setCard({
         cardImage: newCard.image,
-      cardSuit: newCard.suit
-    }]);
+        cardSuit: newCard.suit
+      });
+
+    }
+    if (deckId && buttonClick === true) {
+      getCard(deckId)
 
     }
 
-    getCard(deckId)
-
-  }, [handleClick]);
-
+  }, [buttonClick, deckId]);
 
 
 
   function handleClick(evt) {
-    evt.preventDefault();
+    console.log("clicking is happening")
+    setButtonClick(true);
 
-    //append this to the page upon handleClick
-    return <div>
-      <Card img={cards[cards.length-1].cardImage} />
-    </div>
 
   }
 
@@ -62,8 +65,18 @@ function CardTable() {
   return (
     <div>
       <button onClick={handleClick}>Gimme A Card!</button>
+      {card ? < Card img={card.cardImage} alt={card.cardSuit} /> : null}
     </div>
+      // console.log("this is our card image", card.cardImage)
+
   )
 }
 
 export default CardTable
+
+
+//changed cards array to single card
+//put ternary looking for card into our return 
+// our initial request does not happen on page load
+
+//our handleCLick is blank and react doesn't like that

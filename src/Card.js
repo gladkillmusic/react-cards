@@ -1,8 +1,15 @@
 import React from "react";
 
-function Card({ img }){
+function Card({ img, alt }) {
+
+  let divStyle = {
+    backgroundImage: img
+  }
   return (
-    <img src={img} className="card" alt="Current card"></img>
+    <div style={ divStyle} className="card"> 
+    {/* <img src={img}  alt={alt}></img> */}
+    </div>
+   
   )
 }
 
