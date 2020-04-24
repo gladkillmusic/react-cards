@@ -27,26 +27,27 @@ function CardTable() {
   //gets card from deck, assigns image to our cardImage variable
   //if no cards remaining in deck, alerts that there are no cards left
 
-  useEffect((deckId) => {
+  useEffect(() => {
     async function getCard(deckId) {
-      let response = await axios.get(`https://deckofcardsapi.com/api/deck/${deckId}/draw/?count=1
-      `);
+      let response = await axios.get(`https://deckofcardsapi.com/api/deck/${deckId}/draw/?count=1`);
 
-      if (response.data.remaining === 0) {
-        alert("Error- No Cards Left!");
+      // if (response.data.remaining === 0) {
+      //   alert("Error- No Cards Left!");
 
-      }
+      // }
 
-      let newCard = response.data.cards
+      // let newCard = response.data.cards[0];
+      console.log("this is our response data from getcard", response.data.cards[0])
 
-      setCard({
-        cardImage: newCard.image,
-        cardSuit: newCard.suit
-      });
+      setCard((card)=>({
+        cardImage: response.data.cards[0].image,
+        cardSuit: response.data.cards[0].suit
+      }));
 
     }
     if (deckId && buttonClick === true) {
       getCard(deckId)
+      setButtonClick(false)
 
     }
 
@@ -55,7 +56,9 @@ function CardTable() {
 
 
   function handleClick(evt) {
-    console.log("clicking is happening")
+    // console.log("clicking is happening")
+    // console.log("this is our deckId", deckId)
+    // console.log("this is our card", card);
     setButtonClick(true);
 
 
@@ -65,9 +68,10 @@ function CardTable() {
   return (
     <div>
       <button onClick={handleClick}>Gimme A Card!</button>
-      {card ? < Card img={card.cardImage} alt={card.cardSuit} /> : null}
+      <div>
+      {card ? < Card img={card.cardImage} alt={card.cardSuit} /> : null }
+      </div>
     </div>
-      // console.log("this is our card image", card.cardImage)
 
   )
 }
